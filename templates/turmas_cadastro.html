@@ -12,44 +12,48 @@
 -->
 {% block conteudo %}
 <form method="post">
-    <!--
-        O atributo for faz uma referência ao id de outra tag da página
-    -->
-    <label for="dt_inicio">Data de Início:</label>
-    <!--
-        Não é obrigatório que o atributo id seja igual ao atributo name
-    -->
-    <input type="date" name="dt_inicio" id="dt_inicio">
-    <br>
-
-    <label for="dt_fim">Data de Encerramento:</label>
-    <input type="date" name="dt_fim" id="dt_fim">
-    <br>
-
-    <label for="turno">Turno:</label>
-    <!--
-        Declaração da tag que cria um dropbox (lista supensa)
-    -->
-    <select name="turno" id="turno">
+    <div class="form-group">
         <!--
-            Conteúdo da lista
-            O valor enviado para o Pytho será o conteúdo do atributo 'value'
+            O atributo for faz uma referência ao id de outra tag da página
         -->
-        <option value="MANHÃ">Manhã</option>
-        <option value="TARDE">Tarde</option>
-        <option value="NOITE">Noite</option>
-    </select>
-    <br>
+        <label for="dt_inicio">Data de Início:</label>
+        <!--
+            Não é obrigatório que o atributo id seja igual ao atributo name
+        -->
+        <input type="date" class="form-control" name="dt_inicio" id="dt_inicio">
+    </div>
 
-    <label for="professor">Professor:</label>
-    <select name="professor" id="professor">
-        {% for professor in professores %}
-        <option value="{{ professor['matricula'] }}">{{ professor['nome'] }} ({{ professor['matricula'] }})</option>
-        {% endfor %}
-    </select>
-    <br>
+    <div class="form-group">
+        <label for="dt_fim">Data de Encerramento:</label>
+        <input type="date" class="form-control" name="dt_fim" id="dt_fim">
+    </div>
 
-    <input type="submit" value="Salvar a Turma">
+    <div class="form-group">
+        <label for="turno">Turno:</label>
+        <!--
+            Declaração da tag que cria um dropbox (lista supensa)
+        -->
+        <select class="form-control" name="turno" id="turno">
+            <!--
+                Conteúdo da lista
+                O valor enviado para o Pytho será o conteúdo do atributo 'value'
+            -->
+            <option value="MANHÃ">Manhã</option>
+            <option value="TARDE">Tarde</option>
+            <option value="NOITE">Noite</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="professor">Professor:</label>
+        <select class="form-control" name="professor" id="professor">
+            {% for professor in professores %}
+            <option value="{{ professor['matricula'] }}">{{ professor['nome'] }} ({{ professor['matricula'] }})</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-default">Salvar a Turma</button>
     <hr>
 
     <h3>Alunos</h3>
@@ -61,7 +65,12 @@
         IMPORTANTE: o atributo name deve ser igual para todos as tags para que possamos criar a lista
     -->
     {% for aluno in alunos %}
-    <input type="checkbox" name="alunos" id="alunos_{{ aluno['matricula'] }}" value="{{ aluno['matricula'] }}"><label for="alunos_{{ aluno['matricula'] }}">{{ aluno['nome'] }} ({{ aluno['matricula'] }})</label><br>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" name="alunos" id="alunos_{{ aluno['matricula'] }}" value="{{ aluno['matricula'] }}">
+            {{ aluno['nome'] }} ({{ aluno['matricula'] }})
+        </label>
+    </div>
     {% endfor %}
 
 </form>
