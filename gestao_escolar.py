@@ -55,10 +55,53 @@ def aluno_editar(matricula):
 # Rota para a página de cadastro de turmas
 @app.route('/turmas/cadastro', methods=('GET', 'POST'))
 def turmas_cadastro():
+    # Verificar se o método de envio é o POST
     if request.method == 'POST':
+        # Caso seja POST, significa que foi enviado um formário
+
+        # Capturar os dados que foram enviados pelo formulário
+        # Para este formulário foram enviadas os seguintes campos:
+        #   dt_inicio
+        #   dt_fim
+        #   turno
+        #   professor <- A matrícula do professor
+        #   alunos <- Uma lista de matrículas dos alunos
+
+        # Para os casos de listas, utilizamos o método .getlist (captura de listas), aonde é necessário
+        #   passar por parâmetro o nome do campo
         alunos = request.form.getlist('alunos')
 
-        return alunos
+        # Captura dos campos simples do formulário
+        dt_inicio = request.form['dt_inicio']
+        dt_fim = request.form['dt_fim']
+        turno = request.form['turno']
+        mat_professor = request.form['professor']
+
+        con = sqlite3.connect('gestao-escolar.db')
+        cur = con.cursor()
+
+        sql = f"INSERT INTO turmas ( dt_inicio, dt_fim, turno, mat_professor ) VALUES ( '{dt_inicio}', '{dt_fim}', '{turno}', {mat_professor} )"
+        cur.execute( sql )
+
+        # O código da turma é gerado pelo banco de dados, sendo assim é preciso captura-lo utilizando
+        #   o atributo .lastrowid, disponível no objeto cursor
+        codigo_turma = cur.lastrowid
+
+        # O método .commit é utilizado para confirmar as alterações que acontecem nas tabelas
+        #   por exemplo um comando de inserção
+        con.commit()
+
+        # A variável alunos contém uma lista de alunos captura pelo método .getlist
+        # Uma maneira de navegar na lista de alunos é utilizar a estrutura for
+        for aluno in alunos:
+            sql = f"INSERT INTO matriculas VALUES ( {codigo_turma}, {aluno} )"
+            cur.execute( sql )
+
+            con.commit()
+
+        con.close()
+        
+        return redirect(url_for('alunos'))
 
     con = sqlite3.connect('gestao-escolar.db')
     con.row_factory = sqlite3.Row
