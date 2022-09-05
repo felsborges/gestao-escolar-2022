@@ -1,8 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request
+from flask_bootstrap import Bootstrap
 
 import sqlite3
 
 app = Flask(__name__)
+
+bootstrap = Bootstrap(app)
 
 @app.route('/')
 def index():
