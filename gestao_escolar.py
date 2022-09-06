@@ -77,31 +77,33 @@ def turmas_cadastro():
         turno = request.form['turno']
         mat_professor = request.form['professor']
 
-        con = sqlite3.connect('gestao-escolar.db')
-        cur = con.cursor()
+        if dt_inicio and dt_fim and len(alunos) >= 2:
 
-        sql = f"INSERT INTO turmas ( dt_inicio, dt_fim, turno, mat_professor ) VALUES ( '{dt_inicio}', '{dt_fim}', '{turno}', {mat_professor} )"
-        cur.execute( sql )
+            con = sqlite3.connect('gestao-escolar.db')
+            cur = con.cursor()
 
-        # O código da turma é gerado pelo banco de dados, sendo assim é preciso captura-lo utilizando
-        #   o atributo .lastrowid, disponível no objeto cursor
-        codigo_turma = cur.lastrowid
-
-        # O método .commit é utilizado para confirmar as alterações que acontecem nas tabelas
-        #   por exemplo um comando de inserção
-        con.commit()
-
-        # A variável alunos contém uma lista de alunos captura pelo método .getlist
-        # Uma maneira de navegar na lista de alunos é utilizar a estrutura for
-        for aluno in alunos:
-            sql = f"INSERT INTO matriculas VALUES ( {codigo_turma}, {aluno} )"
+            sql = f"INSERT INTO turmas ( dt_inicio, dt_fim, turno, mat_professor ) VALUES ( '{dt_inicio}', '{dt_fim}', '{turno}', {mat_professor} )"
             cur.execute( sql )
 
+            # O código da turma é gerado pelo banco de dados, sendo assim é preciso captura-lo utilizando
+            #   o atributo .lastrowid, disponível no objeto cursor
+            codigo_turma = cur.lastrowid
+
+            # O método .commit é utilizado para confirmar as alterações que acontecem nas tabelas
+            #   por exemplo um comando de inserção
             con.commit()
 
-        con.close()
-        
-        return redirect(url_for('alunos'))
+            # A variável alunos contém uma lista de alunos captura pelo método .getlist
+            # Uma maneira de navegar na lista de alunos é utilizar a estrutura for
+            for aluno in alunos:
+                sql = f"INSERT INTO matriculas VALUES ( {codigo_turma}, {aluno} )"
+                cur.execute( sql )
+
+                con.commit()
+
+            con.close()
+            
+            return redirect(url_for('alunos'))
 
     con = sqlite3.connect('gestao-escolar.db')
     con.row_factory = sqlite3.Row
